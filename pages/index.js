@@ -7,18 +7,24 @@ export default function HomePage() {
   const [account, setAccount] = useState(undefined);
   const [atm, setATM] = useState(undefined);
   const [balance, setBalance] = useState(undefined);
+  const [ownerName, setOwnerName] = useState(undefined);
 
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+
+  const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+
   const atmABI = atm_abi.abi;
 
   const getWallet = async() => {
     if (window.ethereum) {
       setEthWallet(window.ethereum);
+      window.ethereum.on("accountsChanged", (accounts) => {
+        handleAccount(accounts);
+      });
     }
 
     if (ethWallet) {
-      const account = await ethWallet.request({method: "eth_accounts"});
-      handleAccount(account);
+      const accounts = await ethWallet.request({method: "eth_accounts"});
+      handleAccount(accounts);
     }
   }
 
@@ -49,7 +55,7 @@ export default function HomePage() {
     const provider = new ethers.providers.Web3Provider(ethWallet);
     const signer = provider.getSigner();
     const atmContract = new ethers.Contract(contractAddress, atmABI, signer);
- 
+
     setATM(atmContract);
   }
 
@@ -74,6 +80,16 @@ export default function HomePage() {
       getBalance();
     }
   }
+  const checkOwner = async () => {
+    if (atm) {
+      const ownerName = await atm.checkOwner();
+      setOwnerName(ownerName);
+    }
+    }
+  
+
+  
+  
 
   const initUser = () => {
     // Check to see if user has Metamask
@@ -92,24 +108,30 @@ export default function HomePage() {
 
     return (
       <div>
-        <p>Your Account: {account}</p>
-        <p>Your Balance: {balance}</p>
-        <button onClick={deposit}>Deposit 1 ETH</button>
-        <button onClick={withdraw}>Withdraw 1 ETH</button>
+        <p style={{fontFamily:"Sans-serif"}}>Your Account: {account}</p>
+        <p style={{fontFamily:"Sans-serif"}}>Your Balance: {balance}</p>
+        <p style={{fontFamily:"Sans-serif"}}>Owner Name: {ownerName}</p>
+
+        <button style={{backgroundColor:"#cyan"}}  onClick={deposit}>Deposit 1 ETH</button>
+        <button style={{backgroundColor:"yellow"}} onClick={withdraw}>Withdraw 1 ETH</button>
       </div>
     )
   }
 
-  useEffect(() => {getWallet();}, []);
+  useEffect(() => {
+    getWallet();
+    checkOwner();
+  }, []);
 
   return (
     <main className="container">
-      <header><h1>Welcome to the Metacrafters ATM!</h1></header>
+      <header><h1>Welcome to the Crypto ATM!</h1></header>
       {initUser()}
       <style jsx>{`
         .container {
           text-align: center
         }
+        
       `}
       </style>
     </main>

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.16;
 
 //import "hardhat/console.sol";
 
@@ -9,6 +9,8 @@ contract Assessment {
 
     event Deposit(uint256 amount);
     event Withdraw(uint256 amount);
+    
+
 
     constructor(uint initBalance) payable {
         owner = payable(msg.sender);
@@ -57,4 +59,11 @@ contract Assessment {
         // emit the event
         emit Withdraw(_withdrawAmount);
     }
+
+    function checkOwner()public pure returns(string memory){
+        string memory name="Moshahid Raza";
+        return name;
+    }
+
+    
 }
