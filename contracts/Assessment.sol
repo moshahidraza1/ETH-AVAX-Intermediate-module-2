@@ -6,7 +6,7 @@ pragma solidity ^0.8.16;
 contract Assessment {
     address payable public owner;
     uint256 public balance;
-
+    // uint public b=5;
     event Deposit(uint256 amount);
     event Withdraw(uint256 amount);
     
@@ -64,6 +64,20 @@ contract Assessment {
         string memory name="Moshahid Raza";
         return name;
     }
+    
+    function addition(uint a, uint b) public pure returns(uint){
+        return a+b;
+        
+        // emit Addition((a+b));
+    }
 
+    function substraction(uint a, uint b) public pure returns(uint){
+        require(a>=b,"value of a must me greater than b");
+        return a-b;
+    }
+
+    function multiplication(uint a, uint b) public pure returns(uint){
+        return a*b;
+    }
     
 }

@@ -8,9 +8,14 @@ export default function HomePage() {
   const [atm, setATM] = useState(undefined);
   const [balance, setBalance] = useState(undefined);
   const [ownerName, setOwnerName] = useState(undefined);
+  const [add, setAdd] = useState(undefined);
+  const [sub, setSub] = useState(undefined);
+  const [mult, setMult] = useState(undefined);
+  const [inputA, setInputA] = useState("");
+  const [inputB, setInputB] = useState("");
 
-
-  const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+  
+  const contractAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
 
   const atmABI = atm_abi.abi;
 
@@ -82,15 +87,43 @@ export default function HomePage() {
   }
   const checkOwner = async () => {
     if (atm) {
-      const ownerName = await atm.checkOwner();
-      setOwnerName(ownerName);
+      let owner = await atm.checkOwner();
+      setOwnerName("Moshahid Raza");
     }
+  }
+  const addition = async () => {
+      if (atm) {
+        const a = parseInt(inputA);
+        const b = parseInt(inputB);
+        const answer = await atm.addition(a,b);
+        setAdd(answer);
+      }
+  }  
+  const subtraction = async () => {
+    if (atm) {
+      const a = parseInt(inputA);
+      const b = parseInt(inputB);
+      const answer = await atm.substraction(a,b);
+      setSub(answer);
     }
-  
+  }
+  const multiplication = async () => {
+    if (atm) {
+      const a = parseInt(inputA);
+      const b = parseInt(inputB);
+      const answer = await atm.multiplication(a,b);
+      setMult(answer);
+    }
+  }
+  const handleInputAChange = (event) => {
+    setInputA(event.target.value);
+  };
+
+  const handleInputBChange = (event) => {
+    setInputB(event.target.value);
+  };
 
   
-  
-
   const initUser = () => {
     // Check to see if user has Metamask
     if (!ethWallet) {
@@ -107,15 +140,52 @@ export default function HomePage() {
     }
 
     return (
-      <div>
-        <p style={{fontFamily:"Sans-serif"}}>Your Account: {account}</p>
-        <p style={{fontFamily:"Sans-serif"}}>Your Balance: {balance}</p>
-        <p style={{fontFamily:"Sans-serif"}}>Owner Name: {ownerName}</p>
+      <>
+        <div>
+          <p style={{ fontFamily: "Sans-serif" }}>Your Account: {account}</p>
+          <p style={{ fontFamily: "Sans-serif" }}>Your Balance: {balance}</p>
+          <p style={{ fontFamily: "Sans-serif" }}>Owner Name: {ownerName}</p>
+  
+          <button style={{ backgroundColor: "#cyan" }} onClick={deposit}>
+            Deposit 1 ETH
+          </button>
+          <button style={{ backgroundColor: "yellow" }} onClick={withdraw}>
+            Withdraw 1 ETH
+          </button>
+        </div>
+  
+        <div>
+          <h2>Calculator</h2>
+          <p style={{ fontFamily: "Sans-serif" }}>Add: {add ? add.toString() : ""}</p>
+          <p style={{ fontFamily: "Sans-serif" }}>Sub: {sub ? sub.toString() : ""}</p>
+          <p style={{ fontFamily: "Sans-serif" }}>Multiply: {mult ? mult.toString() : ""}</p>
 
-        <button style={{backgroundColor:"#cyan"}}  onClick={deposit}>Deposit 1 ETH</button>
-        <button style={{backgroundColor:"yellow"}} onClick={withdraw}>Withdraw 1 ETH</button>
-      </div>
-    )
+          <input
+            type="number"
+            placeholder="Enter value A"
+            value={inputA}
+            onChange={handleInputAChange}
+          />
+          <input
+            type="number"
+            placeholder="Enter value B"
+            value={inputB}
+            onChange={handleInputBChange}
+          />
+  
+          <button style={{ backgroundColor: "grey" }} onClick={addition}>
+            Add
+          </button>
+          <button style={{ backgroundColor: "grey" }} onClick={subtraction}>
+            Sub
+          </button>
+          <button style={{ backgroundColor: "grey" }} onClick={multiplication}>
+            Multiply
+          </button>
+        </div>
+      </>
+    );
+    
   }
 
   useEffect(() => {
